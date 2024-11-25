@@ -45,7 +45,7 @@
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
     "@openzeppelin/contracts": "^4.9.5",
-    "@openzeppelin/contracts-upgradeable": "^4.9.5",
+    "@openzeppelin/contracts-upgradeable": "^4.9.6",
     "@openzeppelin/hardhat-upgrades": "1.22.1",
     "@reality.eth/contracts": "4.0.0-rc.8",
     "@RealityETH/zkevm-contracts": "github:RealityETH/zkevm-contracts#38dd8579b1a644ddebd59226d571b2574c76fd35",
