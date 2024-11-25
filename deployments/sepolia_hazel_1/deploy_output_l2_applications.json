@@ -1,0 +1,9 @@
+{
+ "realityETH": "0x74549fdf4e00C7c564bB193a911887d8C291b13C",
+ "arbitrators": [
+  "0x1AF3f6407055C3F5a4388EB04d00841A1b79A014"
+ ],
+ "l2ChainInfo": "0x9f17f4627bEea7f91beB9aC00D94A33fc75221C4",
+ "l2ForkArbitrator": "0x974043EF05BB572AcCa0025Fcd62379BB054922c",
+ "adjudicationFramework": "0xa6F3d82f7aEF02f3f24c3fBcfD814a74fE612D85"
+}

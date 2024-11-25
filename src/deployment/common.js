@@ -5,7 +5,7 @@ const fs = require('fs');
 const { ethers } = require('hardhat');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
-const pathGenesisJson = path.join(__dirname, './deployment/genesis.json');
+const pathGenesisJson = path.join(__dirname, './../deployment/genesis.json');
 
 async function loadOngoingOrDeploy(deployer, contractName, ongoingName, args, ongoing, pathOngoing, externallyDeployedAddress) {
     const contractFactory = await ethers.getContractFactory(contractName, {
@@ -50,5 +50,5 @@ function genesisAddressForContractName(contractName) {
 }
 
 module.exports = {
-    verifyDeploymentParameters, loadOngoingOrDeploy, genesisAddressForContractName,
+    loadOngoingOrDeploy, genesisAddressForContractName,
 };

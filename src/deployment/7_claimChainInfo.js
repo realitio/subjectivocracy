@@ -28,11 +28,12 @@ const axios = require('axios').create({
 
 const deployParameters = require('./deploy_application_parameters.json');
 const common = require('../common/common');
+const commonDeployment = require('./common');
 
 const l2Applications = require('./deploy_output_l2_applications.json');
 
 async function main() {
-    const l2BridgeAddress = common.genesisAddressForContractName('PolygonZkEVMBridge proxy');
+    const l2BridgeAddress = commonDeployment.genesisAddressForContractName('PolygonZkEVMBridge proxy');
 
     const currentProvider = await common.loadProvider(deployParameters, process.env);
     const deployer = await common.loadDeployer(currentProvider, deployParameters);

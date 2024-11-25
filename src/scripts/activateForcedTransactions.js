@@ -33,6 +33,7 @@ async function main() {
     const deployer = await common.loadDeployer(currentProvider, deployParameters);
 
     if (deployerAddress === undefined || deployerAddress.toLowerCase() !== deployer.address.toLowerCase()) {
+        console.log('Wrong deployer address', deployerAddress, deployer.address);
         throw new Error('Wrong deployer address');
     }
 

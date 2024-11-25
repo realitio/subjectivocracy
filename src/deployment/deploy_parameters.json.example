@@ -9,7 +9,7 @@
  "trustedAggregator": "0x740a98F8f4fAe0986FB3264Fe4aaCf94ac1EE96f",
  "trustedAggregatorTimeout": 604799,
  "pendingStateTimeout": 604799,
- "forkID": 5,
+ "forkID": 6,
  "admin": "0x25F2d1651B631BE5334e2E5ebf29842b64aca361",
  "zkEVMOwner": "0x25F2d1651B631BE5334e2E5ebf29842b64aca361",
  "timelockAddress": "0x617b3a3528F9cDd6630fd3301B9c8911F7Bf063D",

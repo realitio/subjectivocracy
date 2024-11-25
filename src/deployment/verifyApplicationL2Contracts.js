@@ -94,6 +94,8 @@ async function main() {
                     deployParameters.adjudicationFrameworkDisputeFee,
                     deployL2OutputParameters.l2ForkArbitrator,
                     deployL2OutputParameters.arbitrators,
+                    false,
+                    deployParameters.l2ForkDelay,
                 ],
             },
         );

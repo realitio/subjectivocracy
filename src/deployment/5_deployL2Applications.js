@@ -61,6 +61,7 @@ async function main() {
         arbitratorOwner,
         realityETHAddress, // This is optional, it will be deployed if not supplied
         initialArbitratorAddresses, // This can be an empty array
+        l2ForkDelay,
     } = deployParameters;
 
     // Load provider
@@ -79,7 +80,7 @@ async function main() {
     const deployerBalance = await currentProvider.getBalance(deployer.address);
     console.log('using deployer: ', deployer.address, 'balance is ', deployerBalance.toString());
 
-    const realityETHContract = await commonDeployment.loadOngoingOrDeploy(deployer, 'RealityETH_v3_0', 'realityETH', [], ongoingDeployment, pathOngoingDeploymentJson, realityETHAddress);
+    const realityETHContract = await commonDeployment.loadOngoingOrDeploy(deployer, '@reality.eth/contracts/development/contracts/RealityETH-4.0.sol:RealityETH_v4_0', 'realityETH', [], ongoingDeployment, pathOngoingDeploymentJson, realityETHAddress);
     if (arbitratorAddresses.length === 0) {
         const arbitratorContract = await commonDeployment.loadOngoingOrDeploy(deployer, 'Arbitrator', 'initialArbitrator', [], ongoingDeployment, pathOngoingDeploymentJson);
 
@@ -96,7 +97,8 @@ async function main() {
 
     const l2ChainInfoContract = await commonDeployment.loadOngoingOrDeploy(deployer, 'L2ChainInfo', 'l2ChainInfo', [l2BridgeAddress, l1GlobalChainInfoPublisher], ongoingDeployment, pathOngoingDeploymentJson);
     const l2ForkArbitratorContract = await commonDeployment.loadOngoingOrDeploy(deployer, 'L2ForkArbitrator', 'l2ForkArbitrator', [realityETHContract.address, l2ChainInfoContract.address, l1GlobalForkRequester, forkArbitratorDisputeFee], ongoingDeployment, pathOngoingDeploymentJson);
-    const adjudicationFrameworkContract = await commonDeployment.loadOngoingOrDeploy(deployer, 'AdjudicationFrameworkRequests', 'adjudicationFramework', [realityETHContract.address, adjudicationFrameworkDisputeFee, l2ForkArbitratorContract.address, arbitratorAddresses, false], ongoingDeployment, pathOngoingDeploymentJson);
+
+    const adjudicationFrameworkContract = await commonDeployment.loadOngoingOrDeploy(deployer, 'AdjudicationFrameworkRequests', 'adjudicationFramework', [realityETHContract.address, adjudicationFrameworkDisputeFee, l2ForkArbitratorContract.address, arbitratorAddresses, false, l2ForkDelay], ongoingDeployment, pathOngoingDeploymentJson);
 
     const outputJson = {
         realityETH: realityETHContract.address,

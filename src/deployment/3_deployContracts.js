@@ -82,8 +82,10 @@ async function main() {
         pendingStateTimeout,
         forkID,
         zkEVMOwner,
-        timelockAddress,
-        minDelayTimelock,
+        /*
+         * timelockAddress,
+         * minDelayTimelock,
+         */
         salt,
         zkEVMDeployerAddress,
         maticTokenAddress,
@@ -101,7 +103,8 @@ async function main() {
     } else {
         if (deployParameters.multiplierGas || deployParameters.maxFeePerGas) {
             if (process.env.HARDHAT_NETWORK !== 'hardhat') {
-                currentProvider = new ethers.providers.JsonRpcProvider(`https://${process.env.HARDHAT_NETWORK}.infura.io/v3/${process.env.INFURA_PROJECT_ID}`);
+                // currentProvider = new ethers.providers.JsonRpcProvider(`https://${process.env.HARDHAT_NETWORK}.infura.io/v3/${process.env.INFURA_PROJECT_ID}`);
+                currentProvider = new ethers.providers.JsonRpcProvider('http://sepolia.backstop.technology');
                 if (deployParameters.maxPriorityFeePerGas && deployParameters.maxFeePerGas) {
                     console.log(`Hardcoded gas used: MaxPriority${deployParameters.maxPriorityFeePerGas} gwei, MaxFee${deployParameters.maxFeePerGas} gwei`);
                     const FEE_DATA = {
@@ -154,7 +157,7 @@ async function main() {
     });
 
     if (!ongoingDeployment.chainIdManager) {
-        chainIdManagerContract = await ChainIdManagerFactory.deploy(1500054);
+        chainIdManagerContract = await ChainIdManagerFactory.deploy(chainID);
         console.log('#######################\n');
         console.log('chainIdManager deployed to:', chainIdManagerContract.address);
 
@@ -418,7 +421,7 @@ async function main() {
                 proxyBridgeAddress,
                 ethers.constants.HashZero,
                 ethers.constants.HashZero,
-                { gasLimit: 5000000 }, // required as native gas limit estimation would return a too low result
+                { gasLimit: 300000 }, // required as native gas limit estimation would return a too low result
             );
         } catch (error) {
             console.error('polygonZkEVMGlobalExitRoot initialization error', error.message);
@@ -534,7 +537,7 @@ async function main() {
                 gasTokenAddress,
                 verifierContract.address,
                 polygonZkEVMBridgeContract.address,
-                { gasLimit: 5000000 }, // required as native gas limit estimation would return a too low result
+                { gasLimit: 600000 }, // required as native gas limit estimation would return a too low result
             );
             console.log('initializeTx', initializeTx.hash);
         } catch (error) {
@@ -608,7 +611,7 @@ async function main() {
                 parentContract,
                 minter,
                 'Forkonomic Token',
-                'FORK',
+                'ZBS',
             );
         }
     } catch (e) {
@@ -645,53 +648,58 @@ async function main() {
      * expect(await upgrades.erc1967.getAdminAddress(forkingManagerContract.address)).to.be.equal(proxyAdminAddress);
      */
 
-    const proxyAdminFactory = await ethers.getContractFactory('ProxyAdmin', deployer);
-    const proxyAdminInstance = proxyAdminFactory.attach(proxyAdminAddress);
-    const proxyAdminOwner = await proxyAdminInstance.owner();
-    const timelockContractFactory = await ethers.getContractFactory('PolygonZkEVMTimelock', deployer);
+    /*
+     * const proxyAdminFactory = await ethers.getContractFactory('ProxyAdmin', deployer);
+     * const proxyAdminInstance = proxyAdminFactory.attach(proxyAdminAddress);
+     * const proxyAdminOwner = await proxyAdminInstance.owner();
+     */
 
-    let timelockContract;
-    if (proxyAdminOwner !== deployer.address) {
-        // Check if there's a timelock deployed there that match the current deployment
-        timelockContract = timelockContractFactory.attach(proxyAdminOwner);
-        expect(precalculateZkevmAddress).to.be.equal(await timelockContract.polygonZkEVM());
-
-        console.log('#######################\n');
-        console.log(
-            'Polygon timelockContract already deployed to:',
-            timelockContract.address,
-        );
-    } else {
-        // deploy timelock
-        console.log('\n#######################');
-        console.log('##### Deployment TimelockContract  #####');
-        console.log('#######################');
-        console.log('minDelayTimelock:', minDelayTimelock);
-        console.log('timelockAddress:', timelockAddress);
-        console.log('zkEVMAddress:', polygonZkEVMContract.address);
-        timelockContract = await timelockContractFactory.deploy(
-            minDelayTimelock,
-            [timelockAddress],
-            [timelockAddress],
-            timelockAddress,
-            polygonZkEVMContract.address,
-        );
-        await timelockContract.deployed();
-        console.log('#######################\n');
-        console.log(
-            'Polygon timelockContract deployed to:',
-            timelockContract.address,
-        );
-
-        // Transfer ownership of the proxyAdmin to timelock
-        await upgrades.admin.transferProxyAdminOwnership(timelockContract.address);
-    }
-
-    console.log('\n#######################');
-    console.log('#####  Checks TimelockContract  #####');
-    console.log('#######################');
-    console.log('minDelayTimelock:', await timelockContract.getMinDelay());
-    console.log('polygonZkEVM:', await timelockContract.polygonZkEVM());
+    /*
+     *const timelockContractFactory = await ethers.getContractFactory('PolygonZkEVMTimelock', deployer);
+     *
+     *let timelockContract;
+     *if (proxyAdminOwner !== deployer.address) {
+     *    // Check if there's a timelock deployed there that match the current deployment
+     *    timelockContract = timelockContractFactory.attach(proxyAdminOwner);
+     *    expect(precalculateZkevmAddress).to.be.equal(await timelockContract.polygonZkEVM());
+     *
+     *    console.log('#######################\n');
+     *    console.log(
+     *        'Polygon timelockContract already deployed to:',
+     *        timelockContract.address,
+     *    );
+     *} else {
+     *    // deploy timelock
+     *    console.log('\n#######################');
+     *    console.log('##### Deployment TimelockContract  #####');
+     *    console.log('#######################');
+     *    console.log('minDelayTimelock:', minDelayTimelock);
+     *    console.log('timelockAddress:', timelockAddress);
+     *    console.log('zkEVMAddress:', polygonZkEVMContract.address);
+     *    timelockContract = await timelockContractFactory.deploy(
+     *        minDelayTimelock,
+     *        [timelockAddress],
+     *        [timelockAddress],
+     *        timelockAddress,
+     *        polygonZkEVMContract.address,
+     *    );
+     *    await timelockContract.deployed();
+     *    console.log('#######################\n');
+     *    console.log(
+     *        'Polygon timelockContract deployed to:',
+     *        timelockContract.address,
+     *    );
+     *
+     *    // Transfer ownership of the proxyAdmin to timelock
+     *    await upgrades.admin.transferProxyAdminOwnership(timelockContract.address);
+     *}
+     *
+     *console.log('\n#######################');
+     *console.log('#####  Checks TimelockContract  #####');
+     *console.log('#######################');
+     *console.log('minDelayTimelock:', await timelockContract.getMinDelay());
+     *console.log('polygonZkEVM:', await timelockContract.polygonZkEVM());
+     */
 
     const outputJson = {
         polygonZkEVMAddress: polygonZkEVMContract.address,
@@ -704,7 +712,7 @@ async function main() {
         verifierAddress: verifierContract.address,
         zkEVMDeployerContract: zkEVMDeployerContract.address,
         deployerAddress: deployer.address,
-        timelockContractAddress: timelockContract.address,
+        // timelockContractAddress: timelockContract.address,
         deploymentBlockNumber,
         genesisRoot: genesisRootHex,
         trustedSequencer,
